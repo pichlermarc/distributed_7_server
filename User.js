@@ -13,7 +13,7 @@ class User {
 
     generateUserInformation()
     {
-        return User(this.username);
+        return new User(this.username);
     }
 }
 

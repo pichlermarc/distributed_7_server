@@ -21,7 +21,7 @@
             console.log("register success.");
             console.log(user);
             localUser = user;
-            socket.emit("message",{username: localUser.username, token: localUser.token, message: "hello,bitches."});
+            socket.emit("message",{username: localUser.username, token: localUser.token, content: "hello,bitches."});
 
         });
 

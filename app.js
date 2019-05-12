@@ -7,7 +7,7 @@ const User = require('./User.js');
 server.listen(80);
 console.log("hello, bitches.");
 
-const sockets = [];
+global.sockets = [];
 global.users = [];
 global.messageHistory = [];
 
@@ -16,15 +16,18 @@ app.get('/', function (req, res) {
 });
 
 function getUsername(token) {
-    users.forEach(user => {
-        if (user.token === token) return user.username;
-    });
+    for(let socketid in global.users)
+    {
+        //console.log(global.users[socketid]);
+        if(global.users[socketid].token === token)
+            return global.users[socketid].username;
+    }
     return null;
 }
 
 function disconnectUser(socket) {
 
-    delete users[socket];
+    delete global.users[socket];
     //TODO: synchronize.
     reportOnlineUsers();
 
@@ -32,14 +35,23 @@ function disconnectUser(socket) {
 
 function reportOnlineUsers() {
     let userList = [];
-    global.users.forEach(user => userList.push(user.generateUserInformation()));
-    console.log(userList);
-    users.forEach(user => user.socket.emit('online_users', userList));
+   // console.log(global.users);
+    for(let key in global.users)
+    {
+        userList.push(global.users[key].generateUserInformation())
+    }
+    for(let key in global.users)
+    {
+        global.users[key].socket.emit("online_users", userList);
+    }
 }
 
 function distributeMessage(message) {
-    messageHistory.push(message);
-    global.users.forEach(user => user.socket.emit("new_message", message));
+    global.messageHistory.push(message);
+    for(let key in global.users)
+    {
+        global.users[key].socket.emit("new_message", message)
+    }
 }
 
 io.on('connection', function (socket) {
@@ -48,18 +60,21 @@ io.on('connection', function (socket) {
         let serverUser = new User(user.username);
         serverUser.generateToken();
         socket.emit('registration_response', serverUser);
-        socket.emit('message_history', messageHistory);
+        socket.emit('message_history', global.messageHistory);
         serverUser.socket = socket;
-        global.users[socket] = serverUser;
+        global.users[socket.id] = serverUser;
         reportOnlineUsers();
     });
 
     socket.on('disconnect', function () {
-        disconnectUser(socket);
+        disconnectUser(socket.id);
     });
 
     socket.on('message', function (clientMessage) {
         let username = getUsername(clientMessage.token);
-        distributeMessage({username: username, content: clientMessage.content});
+        if(username != null)
+            distributeMessage({username: username, content: clientMessage.content});
+        else
+            console.error("user not registered.");
     });
 });
