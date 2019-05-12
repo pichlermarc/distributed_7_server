@@ -9,4 +9,9 @@ class User {
     generateToken() {
         this.token = uuidv4();
     }
+
+    generateUserInformation()
+    {
+        return User(this.username);
+    }
 }

@@ -1,4 +1,4 @@
-const message = require("Message")
+const message = require("Message");
 
 class ClientMessage {
     constructor(username, token, content) {
