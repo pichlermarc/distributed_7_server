@@ -5,7 +5,6 @@ const io = require('socket.io')(server);
 const User = require('./User.js');
 
 server.listen(80);
-console.log("hello, bitches.");
 
 global.sockets = [];
 global.users = [];
@@ -78,3 +77,5 @@ io.on('connection', function (socket) {
             console.error("user not registered.");
     });
 });
+
+console.log("Server up.");
