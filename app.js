@@ -7,9 +7,9 @@ const User = require('./User.js');
 server.listen(80);
 console.log("hello, bitches.");
 
-var sockets = [];
-var users = [];
-var messageHistory = [];
+const sockets = [];
+global.users = [];
+global.messageHistory = [];
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -32,13 +32,14 @@ function disconnectUser(socket) {
 
 function reportOnlineUsers() {
     let userList = [];
-    users.forEach(user => userList.push(user.generateUserInformation()));
+    global.users.forEach(user => userList.push(user.generateUserInformation()));
+    console.log(userList);
     users.forEach(user => user.socket.emit('online_users', userList));
 }
 
 function distributeMessage(message) {
     messageHistory.push(message);
-    users.forEach(user => user.socket.emit("new_message", message));
+    global.users.forEach(user => user.socket.emit("new_message", message));
 }
 
 io.on('connection', function (socket) {
@@ -49,7 +50,7 @@ io.on('connection', function (socket) {
         socket.emit('registration_response', serverUser);
         socket.emit('message_history', messageHistory);
         serverUser.socket = socket;
-        users[socket] = serverUser;
+        global.users[socket] = serverUser;
         reportOnlineUsers();
     });
 

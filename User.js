@@ -4,6 +4,7 @@ class User {
     constructor(username, token = null) {
         this.username = username;
         this.token = token;
+        this.socket = null;
     }
 
     generateToken() {

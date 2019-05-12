@@ -8,14 +8,17 @@
         const socket = io('http://localhost');
         var localUser = null;
         socket.on("request_registration", function (data) {
+            console.log("request to register received.");
             socket.emit("register", {username: "reinhart"});
         });
 
         socket.on("message_history", function (messageHistory) {
+            console.log("message history.");
             console.log(messageHistory);
         });
 
         socket.on("registration_response", function (user) {
+            console.log("register success.");
             console.log(user);
             localUser = user;
             socket.emit("message",{username: localUser.username, token: localUser.token, message: "hello,bitches."});
@@ -23,10 +26,12 @@
         });
 
         socket.on("online_users", function (users) {
+            console.log("online_users:");
             console.log(users);
         });
 
         socket.on("new_message", function (message) {
+            console.log("receive message");
             console.log(message);
         });
     </script>
