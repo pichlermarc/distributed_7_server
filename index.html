@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <script src="/socket.io/socket.io.js"></script>
-<script src="/types/User.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -9,7 +8,7 @@
         const socket = io('http://localhost');
         var localUser = null;
         socket.on("request_registration", function (data) {
-            socket.emit("register", new User("reinhart"));
+            socket.emit("register", {username: "reinhart"});
         });
 
         socket.on("message_history", function (messageHistory) {
@@ -19,7 +18,8 @@
         socket.on("registration_response", function (user) {
             console.log(user);
             localUser = user;
-            socket.emit("message", new ClientMessage(localUser.username, localUser.token, "hello, bitches."))
+            socket.emit("message",{username: localUser.username, token: localUser.token, message: "hello,bitches."});
+
         });
 
         socket.on("online_users", function (users) {
@@ -28,7 +28,8 @@
 
         socket.on("new_message", function (message) {
             console.log(message);
-        });</script>
+        });
+    </script>
 </head>
 <body>
 

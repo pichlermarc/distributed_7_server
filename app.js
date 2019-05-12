@@ -30,7 +30,7 @@ function disconnectUser(socket) {
 function reportOnlineUsers() {
     let userList = [];
     users.forEach(user => userList.push(user.generateUserInformation()));
-    users.forEach(user => users.socket.emit('online_users', userList));
+    users.forEach(user => user.socket.emit('online_users', userList));
 }
 
 function distributeMessage(message) {
@@ -41,8 +41,9 @@ function distributeMessage(message) {
 io.on('connection', function (socket) {
     socket.emit('request_registration', {});
     socket.on('register', function (user) {
-        let serverUser = user.generateToken();
-        socket.emit('registration_response', user);
+        let serverUser = new User(user.username);
+        serverUser.generateToken();
+        socket.emit('registration_response', serverUser);
         socket.emit('message_history', messageHistory);
         serverUser.socket = socket;
         users[socket](serverUser);
@@ -55,6 +56,6 @@ io.on('connection', function (socket) {
 
     socket.on('message', function (clientMessage) {
         let username = getUsername(clientMessage.token);
-        distributeMessage(new Message(username, message.content));
+        distributeMessage({username: username, content: message.content});
     });
 });
