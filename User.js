@@ -15,3 +15,5 @@ class User {
         return User(this.username);
     }
 }
+
+module.exports = User;

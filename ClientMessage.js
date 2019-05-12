@@ -11,3 +11,5 @@ class ClientMessage {
         return new Message(this.username, this.content)
     }
 }
+
+module.exports = ClientMessage;

@@ -1,6 +1,9 @@
 const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+
+const User = require('./User.js');
+
 server.listen(80);
 console.log("hello, bitches.");
 
@@ -46,7 +49,7 @@ io.on('connection', function (socket) {
         socket.emit('registration_response', serverUser);
         socket.emit('message_history', messageHistory);
         serverUser.socket = socket;
-        users[socket](serverUser);
+        users[socket] = serverUser;
         reportOnlineUsers();
     });
 
@@ -56,6 +59,6 @@ io.on('connection', function (socket) {
 
     socket.on('message', function (clientMessage) {
         let username = getUsername(clientMessage.token);
-        distributeMessage({username: username, content: message.content});
+        distributeMessage({username: username, content: clientMessage.content});
     });
 });
