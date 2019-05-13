@@ -4,3 +4,5 @@ class Message {
         this.content = content;
     }
 }
+
+module.exports = Message;

@@ -1,4 +1,4 @@
-const message = require("Message")
+const message = require("Message");
 
 class ClientMessage {
     constructor(username, token, content) {
@@ -11,3 +11,5 @@ class ClientMessage {
         return new Message(this.username, this.content)
     }
 }
+
+module.exports = ClientMessage;
