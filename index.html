@@ -89,7 +89,7 @@
                 return;
 
             let username = $("#username").val();
-            socket = io('http://localhost');
+            socket = io(document.location.href);
 
             socket.on("request_registration", function (data) {
                 console.log("request to register received.");
